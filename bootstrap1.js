@@ -2,14 +2,10 @@
 
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module unless amdModuleId is set
     define(["jquery"], function (a0) {
       return (factory(a0));
     });
   } else if (typeof exports === 'object') {
-    // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
-    // like Node.
     module.exports = factory(require("jquery"));
   } else {
     factory(jQuery);
@@ -19,13 +15,13 @@
 (function ($) {
   'use strict';
 
-  //<editor-fold desc="Shims">
+
   if (!String.prototype.includes) {
     (function () {
-      'use strict'; // needed to support `apply`/`call` with `undefined`/`null`
+      'use strict'; 
       var toString = {}.toString;
       var defineProperty = (function () {
-        // IE 8 only supports `Object.defineProperty` on DOM elements
+       
         try {
           var object = {};
           var $defineProperty = Object.defineProperty;
@@ -73,9 +69,9 @@
 
   if (!String.prototype.startsWith) {
     (function () {
-      'use strict'; // needed to support `apply`/`call` with `undefined`/`null`
+      'use strict'; 
       var defineProperty = (function () {
-        // IE 8 only supports `Object.defineProperty` on DOM elements
+       
         try {
           var object = {};
           var $defineProperty = Object.defineProperty;
@@ -97,13 +93,13 @@
         var searchString = String(search);
         var searchLength = searchString.length;
         var position = arguments.length > 1 ? arguments[1] : undefined;
-        // `ToInteger`
+       
         var pos = position ? Number(position) : 0;
-        if (pos != pos) { // better `isNaN`
+        if (pos != pos) { 
           pos = 0;
         }
         var start = Math.min(Math.max(pos, 0), stringLength);
-        // Avoid the `indexOf` call if no match is possible
+        
         if (searchLength + start > stringLength) {
           return false;
         }
@@ -129,24 +125,21 @@
 
   if (!Object.keys) {
     Object.keys = function (
-      o, // object
-      k, // key
-      r  // result array
+      o,
+      k,
+      r 
       ){
-      // initialize object and result
+      
       r=[];
-      // iterate over object keys
+      
       for (k in o)
-          // fill result array with non-prototypical keys
+          
         r.hasOwnProperty.call(o, k) && r.push(k);
-      // return result
+     
       return r;
     };
   }
 
-  // set data-selected on select element if the value has been programmatically selected
-  // prior to initialization of bootstrap-select
-  // * consider removing or replacing an alternative method *
   var valHooks = {
     useDefault: false,
     _set: $.valHooks.select.set
@@ -163,64 +156,53 @@
     var el = this[0],
         event;
 
-    if (el.dispatchEvent) { // for modern browsers & IE9+
+    if (el.dispatchEvent) { 
       if (typeof Event === 'function') {
-        // For modern browsers
         event = new Event(eventName, {
           bubbles: true
         });
       } else {
-        // For IE since it doesn't support Event constructor
         event = document.createEvent('Event');
         event.initEvent(eventName, true, false);
       }
 
       el.dispatchEvent(event);
-    } else if (el.fireEvent) { // for IE8
+    } else if (el.fireEvent) { 
       event = document.createEventObject();
       event.eventType = eventName;
       el.fireEvent('on' + eventName, event);
     } else {
-      // fall back to jQuery.trigger
       this.trigger(eventName);
     }
   };
-  //</editor-fold>
-
-  // Case insensitive contains search
+ 
   $.expr.pseudos.icontains = function (obj, index, meta) {
     var $obj = $(obj);
     var haystack = ($obj.data('tokens') || $obj.text()).toString().toUpperCase();
     return haystack.includes(meta[3].toUpperCase());
   };
 
-  // Case insensitive begins search
+
   $.expr.pseudos.ibegins = function (obj, index, meta) {
     var $obj = $(obj);
     var haystack = ($obj.data('tokens') || $obj.text()).toString().toUpperCase();
     return haystack.startsWith(meta[3].toUpperCase());
   };
 
-  // Case and accent insensitive contains search
   $.expr.pseudos.aicontains = function (obj, index, meta) {
     var $obj = $(obj);
     var haystack = ($obj.data('tokens') || $obj.data('normalizedText') || $obj.text()).toString().toUpperCase();
     return haystack.includes(meta[3].toUpperCase());
   };
 
-  // Case and accent insensitive begins search
+ 
   $.expr.pseudos.aibegins = function (obj, index, meta) {
     var $obj = $(obj);
     var haystack = ($obj.data('tokens') || $obj.data('normalizedText') || $obj.text()).toString().toUpperCase();
     return haystack.startsWith(meta[3].toUpperCase());
   };
 
-  /**
-   * Remove all diatrics from the given text.
-   * @access private
-   * @param {String} text
-   * @returns {String}
-   */
+ 
   function normalizeToBase(text) {
     var rExps = [
       {re: /[\xC0-\xC6]/g, ch: "A"},
@@ -263,7 +245,7 @@
   }
 
   var Selectpicker = function (element, options, e) {
-    // bootstrap-select has been initialized - revert valHooks.select.set back to its original function
+    
     if (!valHooks.useDefault) {
       $.valHooks.select.set = valHooks._set;
       valHooks.useDefault = true;
@@ -281,13 +263,12 @@
     this.$lis = null;
     this.options = options;
 
-    // If we have no title yet, try to pull it from the html title attribute (jQuery doesnt' pick it up as it's not a
-    // data-attribute)
+  
     if (this.options.title === null) {
       this.options.title = this.$element.attr('title');
     }
 
-    //Expose public methods
+  
     this.val = Selectpicker.prototype.val;
     this.render = Selectpicker.prototype.render;
     this.refresh = Selectpicker.prototype.refresh;
@@ -304,7 +285,7 @@
 
   Selectpicker.VERSION = '1.11.2';
 
-  // part of this is duplicated in i18n/defaults-en_US.js. Make sure to update both.
+  
   Selectpicker.DEFAULTS = {
     noneSelectedText: 'Nothing selected',
     noneResultsText: 'No results matched {0}',
@@ -362,8 +343,7 @@
 
       this.$element.addClass('bs-select-hidden');
 
-      // store originalIndex (key) and newIndex (value) in this.liObj for fast accessibility
-      // allows us to do this.$lis.eq(that.liObj[index]) instead of this.$lis.filter('[data-original-index="' + index + '"]')
+     
       this.liObj = {};
       this.multiple = this.$element.prop('multiple');
       this.autofocus = this.$element.prop('autofocus');
@@ -447,12 +427,11 @@
     },
 
     createDropdown: function () {
-      // Options
-      // If we are multiple or showTick option is set, then add the show-tick class
+     
       var showTick = (this.multiple || this.options.showTick) ? ' show-tick' : '',
           inputGroup = this.$element.parent().hasClass('input-group') ? ' input-group-btn' : '',
           autofocus = this.autofocus ? ' autofocus' : '';
-      // Elements
+  
       var header = this.options.header ? '<div class="popover-title"><button type="button" class="close" aria-hidden="true">&times;</button>' + this.options.header + '</div>' : '';
       var searchbox = this.options.liveSearch ?
       '<div class="bs-searchbox">' +
@@ -511,9 +490,9 @@
     },
 
     reloadLi: function () {
-      //Remove all children.
+    
       this.destroyLi();
-      //Re build
+    
       var li = this.createLi();
       this.$menuInner[0].innerHTML = li;
     },
@@ -527,16 +506,9 @@
           _li = [],
           optID = 0,
           titleOption = document.createElement('option'),
-          liIndex = -1; // increment liIndex whenever a new <li> element is created to ensure liObj is correct
+          liIndex = -1; 
 
-      // Helper functions
-      /**
-       * @param content
-       * @param [index]
-       * @param [classes]
-       * @param [optgroup]
-       * @returns {string}
-       */
+    
       var generateLI = function (content, index, classes, optgroup) {
         return '<li' +
             ((typeof classes !== 'undefined' & '' !== classes) ? ' class="' + classes + '"' : '') +
@@ -545,13 +517,7 @@
             '>' + content + '</li>';
       };
 
-      /**
-       * @param text
-       * @param [classes]
-       * @param [inline]
-       * @param [tokens]
-       * @returns {string}
-       */
+     
       var generateA = function (text, classes, inline, tokens) {
         return '<a tabindex="0"' +
             (typeof classes !== 'undefined' ? ' class="' + classes + '"' : '') +
@@ -564,20 +530,17 @@
       };
 
       if (this.options.title && !this.multiple) {
-        // this option doesn't create a new <li> element, but does add a new option, so liIndex is decreased
-        // since liObj is recalculated on every refresh, liIndex needs to be decreased even if the titleOption is already appended
+       
         liIndex--;
 
         if (!this.$element.find('.bs-title-option').length) {
-          // Use native JS to prepend option (faster)
+        
           var element = this.$element[0];
           titleOption.className = 'bs-title-option';
           titleOption.appendChild(document.createTextNode(this.options.title));
           titleOption.value = '';
           element.insertBefore(titleOption, element.firstChild);
-          // Check if selected or data-selected attribute is already set on an option. If not, select the titleOption option.
-          // the selected item may have been changed by user or programmatically before the bootstrap select plugin runs,
-          // if so, the select will have the data-selected attribute
+        
           var $opt = $(element.options[element.selectedIndex]);
           if ($opt.attr('selected') === undefined && this.$element.data('selected') === undefined) {
             titleOption.selected = true;
@@ -592,7 +555,6 @@
 
         if ($this.hasClass('bs-title-option')) return;
 
-        // Get the class and text for the option
         var optionClass = this.className || '',
             inline = this.style.cssText,
             text = $this.data('content') ? $this.data('content') : $this.html(),
@@ -614,7 +576,7 @@
         }
 
         if (!$this.data('content')) {
-          // Prepend any icon and append any subtext to the main text.
+         
           text = icon + '<span class="text">' + text + subtext + '</span>';
         }
 
@@ -633,17 +595,17 @@
 
           var optGroupClass = ' ' + $parent[0].className || '';
 
-          if ($this.index() === 0) { // Is it the first option of the optgroup?
+          if ($this.index() === 0) { 
             optID += 1;
 
-            // Get the opt group label
+          
             var label = $parent[0].label,
                 labelSubtext = typeof $parent.data('subtext') !== 'undefined' ? '<small class="text-muted">' + $parent.data('subtext') + '</small>' : '',
                 labelIcon = $parent.data('icon') ? '<span class="' + that.options.iconBase + ' ' + $parent.data('icon') + '"></span> ' : '';
 
             label = labelIcon + '<span class="text">' + label + labelSubtext + '</span>';
 
-            if (index !== 0 && _li.length > 0) { // Is it NOT the first option of the select && are there elements in the dropdown?
+            if (index !== 0 && _li.length > 0) { 
               liIndex++;
               _li.push(generateLI('', null, 'divider', optID + 'div'));
             }
@@ -664,24 +626,23 @@
         } else {
           var showDivider = this.previousElementSibling && this.previousElementSibling.tagName === 'OPTGROUP';
 
-          // if previous element is not an optgroup and hideDisabled is true
+      
           if (!showDivider && that.options.hideDisabled) {
-            // get previous elements
+         
             var $prev = $(this).prevAll();
 
             for (var i = 0; i < $prev.length; i++) {
-              // find the first element in the previous elements that is an optgroup
+            
               if ($prev[i].tagName === 'OPTGROUP') {
                 var optGroupDistance = 0;
 
-                // loop through the options in between the current option and the optgroup
-                // and check if they are hidden or disabled
+             
                 for (var d = 0; d < i; d++) {
                   var prevOption = $prev[d];
                   if (prevOption.disabled || $(prevOption).data('hidden') === true) optGroupDistance++;
                 }
 
-                // if all of the options between the current option and the optgroup are hidden or disabled, show the divider
+               
                 if (optGroupDistance === i) showDivider = true;
 
                 break;
@@ -699,7 +660,7 @@
         that.liObj[index] = liIndex;
       });
 
-      //If we are not multiple, we don't have a selected item, and we don't have a title, select the first element so something is set in the button
+     
       if (!this.multiple && this.$element.find('option:selected').length === 0 && !this.options.title) {
         this.$element.find('option').eq(0).prop('selected', true).attr('selected', 'selected');
       }
@@ -712,14 +673,12 @@
       return this.$lis;
     },
 
-    /**
-     * @param [updateLi] defaults to true
-     */
+    
     render: function (updateLi) {
       var that = this,
           notDisabled;
 
-      //Update the LI to match the SELECT
+     
       if (updateLi !== false) {
         this.$element.find('option').each(function (index) {
           var $lis = that.findLis().eq(that.liObj[index]);
@@ -756,11 +715,9 @@
         }
       }).toArray();
 
-      //Fixes issue in IE10 occurring when no default option is selected and at least one option is disabled
-      //Convert all the values into a comma delimited string
+    
       var title = !this.multiple ? selectedItems[0] : selectedItems.join(this.options.multipleSeparator);
 
-      //If this is multi select, and the selectText type is count, the show 1 of 2 selected etc..
       if (this.multiple && this.options.selectedTextFormat.indexOf('count') > -1) {
         var max = this.options.selectedTextFormat.split('>');
         if ((max.length > 1 && selectedItems.length > max[1]) || (max.length == 1 && selectedItems.length >= 2)) {
@@ -779,22 +736,19 @@
         title = this.options.title;
       }
 
-      //If we dont have a title, then use the default, or if nothing is set at all, use the not selected text
+     
       if (!title) {
         title = typeof this.options.title !== 'undefined' ? this.options.title : this.options.noneSelectedText;
       }
 
-      //strip all html-tags and trim the result
+ 
       this.$button.attr('title', $.trim(title.replace(/<[^>]*>?/g, '')));
       this.$button.children('.filter-option').html(title);
 
       this.$element.trigger('rendered.bs.select');
     },
 
-    /**
-     * @param [style]
-     * @param [status]
-     */
+   
     setStyle: function (style, status) {
       if (this.$element.attr('class')) {
         this.$newElement.addClass(this.$element.attr('class').replace(/selectpicker|mobile-device|bs-select-hidden|validate\[.*\]/gi, ''));
@@ -840,7 +794,6 @@
       menuInner.appendChild(divider);
       if (header) menu.appendChild(header);
       if (search) {
-        // create a span instead of input as creating an input element is slower
         var input = document.createElement('span');
         search.className = 'bs-searchbox';
         input.className = 'form-control';
@@ -860,7 +813,7 @@
           actionsHeight = actions ? actions.offsetHeight : 0,
           doneButtonHeight = doneButton ? doneButton.offsetHeight : 0,
           dividerHeight = $(divider).outerHeight(true),
-          // fall back to jQuery if getComputedStyle is not supported
+       
           menuStyle = typeof getComputedStyle === 'function' ? getComputedStyle(menu) : false,
           $menu = menuStyle ? null : $(menu),
           menuPadding = {
@@ -1023,7 +976,7 @@
         }
 
         if (that.options.dropupAuto) {
-          //noinspection JSUnusedAssignment
+       
           this.$newElement.toggleClass('dropup', selectOffsetTop > selectOffsetBot && (menuHeight - menuExtras.vert) < getHeight);
         }
         $menu.css({
@@ -1043,7 +996,7 @@
       if (this.options.width === 'auto') {
         this.$menu.css('min-width', '0');
 
-        // Get correct width if element is hidden
+ 
         var $selectClone = this.$menu.parent().clone().appendTo('body'),
             $selectClone2 = this.options.container ? this.$newElement.clone().appendTo('body') : $selectClone,
             ulWidth = $selectClone.children('.dropdown-menu').outerWidth(),
@@ -1052,22 +1005,21 @@
         $selectClone.remove();
         $selectClone2.remove();
 
-        // Set width to whatever's larger, button title or longest option
         this.$newElement.css('width', Math.max(ulWidth, btnWidth) + 'px');
       } else if (this.options.width === 'fit') {
-        // Remove inline min-width so width can be changed from 'auto'
+    
         this.$menu.css('min-width', '');
         this.$newElement.css('width', '').addClass('fit-width');
       } else if (this.options.width) {
-        // Remove inline min-width so width can be changed from 'auto'
+       
         this.$menu.css('min-width', '');
         this.$newElement.css('width', this.options.width);
       } else {
-        // Remove inline min-width/width so width can be changed
+        
         this.$menu.css('min-width', '');
         this.$newElement.css('width', '');
       }
-      // Remove fit-width class if width is changed programmatically
+     
       if (this.$newElement.hasClass('fit-width') && this.options.width !== 'fit') {
         this.$newElement.removeClass('fit-width');
       }
@@ -1127,25 +1079,17 @@
       });
     },
 
-    /**
-     * @param {number} index - the index of the option that is being changed
-     * @param {boolean} selected - true if the option is being selected, false if being deselected
-     * @param {JQuery} $lis - the 'li' element that is being modified
-     */
+   
     setSelected: function (index, selected, $lis) {
       if (!$lis) {
-        this.togglePlaceholder(); // check if setSelected is being called by changing the value of the select
+        this.togglePlaceholder();
         $lis = this.findLis().eq(this.liObj[index]);
       }
 
       $lis.toggleClass('selected', selected).find('a').attr('aria-selected', selected);
     },
 
-    /**
-     * @param {number} index - the index of the option that is being disabled
-     * @param {boolean} disabled - true if the option is being disabled, false if being enabled
-     * @param {JQuery} $lis - the 'li' element that is being modified
-     */
+   
     setDisabled: function (index, disabled, $lis) {
       if (!$lis) {
         $lis = this.findLis().eq(this.liObj[index]);
@@ -1228,7 +1172,7 @@
 
           if (typeof selectedIndex !== 'number' || that.options.size === false) return;
 
-          // scroll to selected option
+         
           var offset = that.$lis.eq(selectedIndex)[0].offsetTop - that.$menuInner[0].offsetTop;
           offset = offset - that.$menuInner[0].offsetHeight/2 + that.sizeInfo.liHeight/2;
           that.$menuInner[0].scrollTop = offset;
@@ -1242,14 +1186,14 @@
             prevIndex = that.$element.prop('selectedIndex'),
             triggerChange = true;
 
-        // Don't close on multi choice menu
+      
         if (that.multiple && that.options.maxOptions !== 1) {
           e.stopPropagation();
         }
 
         e.preventDefault();
 
-        //Don't run if we have been disabled
+      
         if (!that.isDisabled() && !$this.parent().hasClass('disabled')) {
           var $options = that.$element.find('option'),
               $option = $options.eq(clickedIndex),
@@ -1258,12 +1202,12 @@
               maxOptions = that.options.maxOptions,
               maxOptionsGrp = $optgroup.data('maxOptions') || false;
 
-          if (!that.multiple) { // Deselect all others if not multi select box
+          if (!that.multiple) { 
             $options.prop('selected', false);
             $option.prop('selected', true);
             that.$menuInner.find('.selected').removeClass('selected').find('a').attr('aria-selected', false);
             that.setSelected(clickedIndex, true);
-          } else { // Toggle the one we have chosen if we are multi select.
+          } else {
             $option.prop('selected', !state);
             that.setSelected(clickedIndex, !state);
             $this.blur();
@@ -1290,8 +1234,7 @@
                       maxTxt = maxOptionsArr[0].replace('{n}', maxOptions),
                       maxTxtGrp = maxOptionsArr[1].replace('{n}', maxOptionsGrp),
                       $notify = $('<div class="notify"></div>');
-                  // If {var} is set in array, replace it
-                  /** @deprecated */
+                 
                   if (maxOptionsArr[2]) {
                     maxTxt = maxTxt.replace('{var}', maxOptionsArr[2][maxOptions > 1 ? 0 : 1]);
                     maxTxtGrp = maxTxtGrp.replace('{var}', maxOptionsArr[2][maxOptionsGrp > 1 ? 0 : 1]);
@@ -1331,10 +1274,10 @@
             that.$searchbox.focus();
           }
 
-          // Trigger select 'change'
+       
           if (triggerChange) {
             if ((prevValue != that.$element.val() && that.multiple) || (prevIndex != that.$element.prop('selectedIndex') && !that.multiple)) {
-              // $option.prop('selected') is current option state (selected/unselected). state is previous option state.
+           
               changed_arguments = [clickedIndex, $option.prop('selected'), state];
               that.$element
                 .triggerNative('change');
@@ -1440,7 +1383,6 @@
 
           var $lisVisible = that.$lis.not('.hidden');
 
-          // hide divider if first or last visible, or if followed by another divider
           $lisVisible.each(function (index) {
             var $this = $(this);
 
@@ -1635,7 +1577,7 @@
           e.stopPropagation();
           that.$button.click().focus();
         }
-        // $items contains li elements when liveSearch is enabled
+      
         $items = $('[role="listbox"] li' + selector, $parent);
         if (!$this.val() && !/(38|40)/.test(e.keyCode.toString(10))) {
           if ($items.filter('.active').length === 0) {
@@ -1730,17 +1672,17 @@
         $items.eq(keyIndex[count - 1]).children('a').focus();
       }
 
-      // Select focused option if "Enter", "Spacebar" or "Tab" (when selectOnTab is true) are pressed inside the menu.
+     
       if ((/(13|32)/.test(e.keyCode.toString(10)) || (/(^9$)/.test(e.keyCode.toString(10)) && that.options.selectOnTab)) && isActive) {
         if (!/(32)/.test(e.keyCode.toString(10))) e.preventDefault();
         if (!that.options.liveSearch) {
           var elem = $(':focus');
           elem.click();
-          // Bring back focus for multiselects
+         
           elem.focus();
-          // Prevent screen from scrolling if the user hit the spacebar
+        
           e.preventDefault();
-          // Fixes spacebar selection of dropdown items in FF & IE
+          
           $(document).data('spaceSelect', true);
         } else if (!/(32)/.test(e.keyCode.toString(10))) {
           that.$menuInner.find('.active a').click();
@@ -1803,13 +1745,8 @@
     }
   };
 
-  // SELECTPICKER PLUGIN DEFINITION
-  // ==============================
   function Plugin(option, event) {
-    // get the args of the outer function..
     var args = arguments;
-    // The arguments of the function are explicitly re-defined from the argument list, because the shift causes them
-    // to get lost/corrupted in android 2.3 and IE9 #715 #775
     var _option = option,
         _event = event;
     [].shift.apply(args);
@@ -1855,8 +1792,7 @@
   $.fn.selectpicker = Plugin;
   $.fn.selectpicker.Constructor = Selectpicker;
 
-  // SELECTPICKER NO CONFLICT
-  // ========================
+
   $.fn.selectpicker.noConflict = function () {
     $.fn.selectpicker = old;
     return this;
@@ -1869,8 +1805,7 @@
         e.stopPropagation();
       });
 
-  // SELECTPICKER DATA-API
-  // =====================
+
   $(window).on('load.bs.select.data-api', function () {
     $('.selectpicker').each(function () {
       var $selectpicker = $(this);
