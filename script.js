@@ -1,5 +1,5 @@
 
-//for filterable portfolio gallery
+//for filterable portfolio projects
 const filterContainer = document.querySelector(".gallery-filter"),
 galleryItems = document.querySelectorAll(".gallery-item");
 
